@@ -11,9 +11,9 @@ const db = new Database();
 export default class TelaEntrada extends Component {
 
     adicionaLista(valorEntrada, inputEntrada) {
-      if (valorEntrada === '')
+      if (valorEntrada === '') {
         return;
-  
+      }
       db.getNovaChave().then((maximo) => {
       let nova = [
         {
@@ -23,7 +23,6 @@ export default class TelaEntrada extends Component {
       ];
       db.addLista(nova);
     });
-  
       inputEntrada.clear();
       //this.getLista();
     }

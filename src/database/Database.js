@@ -4,9 +4,9 @@ import SQLite from "react-native-sqlite-storage";
 import { DATABASE } from "./Constants";
 
 const database_name = DATABASE.FILE_NAME;
-const database_version = "1.0";
+/* const database_version = "1.0";
 const database_displayname = "SQLite React Offline Database";
-const database_size = 200000;
+const database_size = 200000; */
 
 export default class Database {
 
@@ -24,10 +24,10 @@ export default class Database {
   deleteLista() {
     this.db.transaction((tx) => {
       tx.executeSql('delete from Lista', []
-      ,(tx, results) => {
-        console.log("Exclusão feita com sucesso!")
+      ,(_tx, _results) => {
+        console.log("Exclusão feita com sucesso!");
       },
-      (e) => {
+      (_e) => {
         //
       });
     });
@@ -38,18 +38,18 @@ export default class Database {
     db.transaction((tx) => {
       console.log("Verificando tabelas");
       tx.executeSql("SELECT name FROM sqlite_master WHERE type=? AND name=?",
-      ["table","Lista"], (tx, results) => {
+      ["table","Lista"], (_tx, results) => {
         if (results.rows.length === 0) {
-          db.transaction((tx) => {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS Lista (cod_lista, texto, prioridade)', 
-            [], (tx, results) => {
+          db.transaction((__tx) => {
+            __tx.executeSql('CREATE TABLE IF NOT EXISTS Lista (cod_lista, texto, prioridade)',
+            [], (___tx, _results) => {
               console.log("Criando tabela");
-            },(e) => {
+            },(_e) => {
               console.log('Erro ao criar tabela!');
             });
           });
         }
-      },(e) => {
+      },(_e) => {
         console.log("Erro ao verificar tabelas");
       });
     });
@@ -72,7 +72,7 @@ export default class Database {
     if (this.db) {
       console.log("Closing DB");
       this.db.close()
-        .then(status => {
+        .then(_status => {
           console.log("Database CLOSED");
         })
         .catch(error => {
@@ -83,7 +83,7 @@ export default class Database {
     }
   }
 
-  errorCallback(e) {
+  errorCallback(_e) {
     console.log("Erro!");
   }
 
@@ -91,8 +91,8 @@ export default class Database {
     return new Promise((resolve) => {
       const lista = [];
       this.db.transaction((tx) => {
-          tx.executeSql('SELECT cod_lista, texto, prioridade FROM Lista', [], 
-          (tx, results) => {
+          tx.executeSql('SELECT cod_lista, texto, prioridade FROM Lista', [],
+          (_tx, results) => {
             console.log("Requisição completa" + results.rows.length);
             var len = results.rows.length;
             for (let i = 0; i < len; i++) {
@@ -105,7 +105,6 @@ export default class Database {
                 prioridade,
               });
             }
-            // eslint-disable-next-line no-undef
             resolve(lista);
           },
           this.errorCallback
@@ -117,12 +116,10 @@ export default class Database {
   getNovaChave() {
     return new Promise((resolve) => {
       this.db.transaction((tx) => {
-          tx.executeSql('SELECT COALESCE(MAX(cod_lista),0) as maximo FROM Lista', [], 
-          (tx, results) => {
-            //let maximo = Number(results.rows.item(0).maximo);
+          tx.executeSql('SELECT COALESCE(MAX(cod_lista),0) as maximo FROM Lista', [],
+          (_tx, results) => {
             let row = results.rows.item(0);
             const { maximo } = row;
-            // eslint-disable-next-line no-undef
             resolve(Number(maximo) + 1);
           },
           this.errorCallback
@@ -135,10 +132,10 @@ export default class Database {
     //return new Promise((resolve) => {
       this.db.transaction((tx) => {
         tx.executeSql('INSERT INTO Lista VALUES (?, ?, ?)', [item[0].cod_lista, item[0].texto, null]
-        ,(tx, results) => {
+        ,(_tx, _results) => {
           //resolve(results);
         },
-        (e) => {
+        (_e) => {
           console.log("Erro ao persistir dados");
         });
       });
@@ -149,7 +146,7 @@ export default class Database {
     return new Promise((resolve) => {
       this.db.transaction((tx) => {
         tx.executeSql('UPDATE Lista SET texto = ?, prioridade = ? WHERE cod_lista = ?', [lista.texto, null, lista.id])
-        .then(([tx, results]) => {
+        .then((_tx, results) => {
           resolve(results);
         });
       })
@@ -162,10 +159,10 @@ export default class Database {
   deleteList(id) {
     this.db.transaction((tx) => {
       tx.executeSql('DELETE FROM Lista WHERE cod_lista = ?', [id]
-      ,(tx, results) => {
-        console.log('Exclusão bem sucedida. - '+String(id));
+      ,(_tx, _results) => {
+        console.log('Exclusão bem sucedida. - ' + String(id));
       },
-      (e) => {
+      (_e) => {
         //
       });
     });

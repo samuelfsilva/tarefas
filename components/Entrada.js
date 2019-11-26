@@ -8,7 +8,6 @@ import {
  } from 'react-native';
 
  export default class Entrada extends Component {
-    
       state = {
         valorEntrada: '',
       }
@@ -18,7 +17,7 @@ import {
               <TextInput style={styles.entrada}
                 placeholder="Adicione o texto..."
                 underlineColorAndroid="transparent"
-                ref={input => this.inputEntrada = input}
+                ref={input => {this.inputEntrada = input;}}
                 onChangeText={texto => this.setState({valorEntrada: texto})} />
               <Button
                 color={'black'}
