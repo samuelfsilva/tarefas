@@ -4,13 +4,55 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Arrays;
 
-public class MainApplication extends Application implements ReactApplication {
+import com.reactnativenavigation.NavigationApplication;
+import com.reactnativenavigation.react.NavigationReactNativeHost;
+import com.reactnativenavigation.react.ReactGateway;
+
+import org.pgsqlite.SQLitePluginPackage;
+
+
+
+public class MainApplication extends NavigationApplication {
+
+  @Override
+  protected ReactGateway createReactGateway() {
+      ReactNativeHost host = new NavigationReactNativeHost(this, isDebug(), createAdditionalReactPackages()) {
+          @Override
+          protected String getJSMainModuleName() {
+              return "index";
+          }
+      };
+      return new ReactGateway(this, isDebug(), host);
+  }
+
+  @Override
+  public boolean isDebug() {
+      return BuildConfig.DEBUG;
+  }
+
+  protected List<ReactPackage> getPackages() {
+      // Add additional packages you require here
+      // No need to add RnnPackage and MainReactPackage
+      return Arrays.<ReactPackage>asList(
+          // eg. new VectorIconsPackage()
+          //new MainReactPackage(),
+          new RNGestureHandlerPackage(),
+          new SQLitePluginPackage()
+      );
+  }
+
+  @Override
+  public List<ReactPackage> createAdditionalReactPackages() {
+      return getPackages();
+  }
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {

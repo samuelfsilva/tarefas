@@ -37,7 +37,7 @@ export default class Database {
     console.log("Conectado ao Banco");
     db.transaction((tx) => {
       console.log("Verificando tabelas");
-      tx.executeSql('SELECT name FROM sqlite_master WHERE type=? AND name=?',
+      tx.executeSql("SELECT name FROM sqlite_master WHERE type=? AND name=?",
       ["table","Lista"], (tx, results) => {
         if (results.rows.length === 0) {
           db.transaction((tx) => {
@@ -60,7 +60,8 @@ export default class Database {
     return SQLite.openDatabase({
         name: database_name,
         location: 'default',
-        createFromLocation: './TestDB.db',
+        //createFromLocation: './' + database_name,
+        createFromLocation : 1,
       },
       this.successOpenDatabaseCallback
       ,
@@ -96,7 +97,7 @@ export default class Database {
             var len = results.rows.length;
             for (let i = 0; i < len; i++) {
               let row = results.rows.item(i);
-              console.log(row.texto+" - "+row.cod_lista);
+              console.log(row.texto + " - " + row.cod_lista);
               const { cod_lista, texto, prioridade } = row;
               lista.push({
                 cod_lista,
@@ -113,6 +114,23 @@ export default class Database {
     });
   }
 
+  getNovaChave() {
+    return new Promise((resolve) => {
+      this.db.transaction((tx) => {
+          tx.executeSql('SELECT COALESCE(MAX(cod_lista),0) as maximo FROM Lista', [], 
+          (tx, results) => {
+            //let maximo = Number(results.rows.item(0).maximo);
+            let row = results.rows.item(0);
+            const { maximo } = row;
+            // eslint-disable-next-line no-undef
+            resolve(Number(maximo) + 1);
+          },
+          this.errorCallback
+          );
+      });
+    });
+  }
+
   addLista(item) {
     //return new Promise((resolve) => {
       this.db.transaction((tx) => {
@@ -121,7 +139,7 @@ export default class Database {
           //resolve(results);
         },
         (e) => {
-          console.log("Erro ao persistir dados")
+          console.log("Erro ao persistir dados");
         });
       });
     //});

@@ -11,26 +11,22 @@ const db = new Database();
 export default class TelaEntrada extends Component {
 
     adicionaLista(valorEntrada, inputEntrada) {
-        if (valorEntrada === '')
-          return;
-    
-          console.log(valorEntrada);
-        let nova = [
-          //...this.state.lista,
-          {
-            cod_lista: String(this.state.lista.length),
-            texto: valorEntrada,
-          },
-        ];
-    
-        //this.setState({
-          //dados: nova,
-        //});
-        db.addLista(nova);
-    
-        inputEntrada.clear();
-        //this.getLista();
-      }
+      if (valorEntrada === '')
+        return;
+  
+      db.getNovaChave().then((maximo) => {
+      let nova = [
+        {
+          cod_lista: String(maximo),
+          texto: valorEntrada,
+        },
+      ];
+      db.addLista(nova);
+    });
+  
+      inputEntrada.clear();
+      //this.getLista();
+    }
 
     render() {
         return (

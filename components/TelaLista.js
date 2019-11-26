@@ -4,12 +4,13 @@ import {
   StyleSheet,
   View,
   Text,
+  TouchableHighlight,
 } from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import Lista from './Lista';
 import Database from '../src/database/Database';
 
 const db = new Database();
-
 export default class TelaLista extends Component {
 
   constructor(){
@@ -18,12 +19,45 @@ export default class TelaLista extends Component {
       valorEntrada: '',
       lista: [],
     };
+    //this.getLista();
+  }
+
+  /* componentDidMount() {
+    this.TelaLista = this.props.navigation.addListener('didFocus', () => {
+      //this.getLista();
+    });
+  } */
+  componentDidMount() {
+    this.navigationEventListener = Navigation.events().bindComponent(this);
+  }
+
+  componentWillUnmount() {
+    if (this.navigationEventListener) {
+      this.navigationEventListener.remove();
+    }
+  }
+
+  componentDidAppear() {
     this.getLista();
   }
 
-  componentDidMount() {
-    this.TelaLista = this.props.navigation.addListener('didFocus', () => {
-      this.getLista();
+  telaAdiciona() {
+    console.log('Press');
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: 'TelaEntrada',
+        options: {
+          topBar: {
+            title: {
+              text: 'Adicionar tarefas',
+              alignment: 'center',
+            },
+            background: {
+              color: 'red',
+            },
+          },
+        },
+      },
     });
   }
 
@@ -67,6 +101,10 @@ export default class TelaLista extends Component {
     return (
         <View style={styles.tela}>
           {this.exibeLista()}
+          <TouchableHighlight style={styles.itemBotao}
+              underlayColor={'gray'} onPress={this.telaAdiciona.bind(this)}>
+              <Text style={styles.textoBotao}>+</Text>
+          </TouchableHighlight>
         </View>
     );
   }
@@ -101,5 +139,29 @@ const styles = StyleSheet.create({
   },
   aviso: {
     color: '#7f8c8d',
+  },
+  itemBotao: {
+    backgroundColor: 'red',
+    position: 'absolute',
+    bottom: 20,
+    right:20,
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: "#000000",
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 0,
+    },
+  },
+  textoBotao: {
+    fontSize: 40,
+    color: 'white',
+    marginBottom: 2,
+    marginRight: 1,
   },
 });
