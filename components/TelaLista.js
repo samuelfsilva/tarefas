@@ -4,9 +4,9 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableHighlight,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
+import { Icon } from 'react-native-elements';
 import Lista from './Lista';
 import Database from '../src/database/Database';
 
@@ -101,10 +101,14 @@ export default class TelaLista extends Component {
     return (
         <View style={styles.tela}>
           {this.exibeLista()}
-          <TouchableHighlight style={styles.itemBotao}
-              underlayColor={'gray'} onPress={this.telaAdiciona.bind(this)}>
-              <Text style={styles.textoBotao}>+</Text>
-          </TouchableHighlight>
+          <View style={styles.itemBotao}>
+          <Icon
+            reverse
+            name="add"
+            color="red"
+            size={30}
+            onPress={this.telaAdiciona.bind(this)} />
+          </View>
         </View>
     );
   }
@@ -141,22 +145,9 @@ const styles = StyleSheet.create({
     color: '#7f8c8d',
   },
   itemBotao: {
-    backgroundColor: 'red',
     position: 'absolute',
     bottom: 20,
     right:20,
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000000',
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    shadowOffset: {
-      height: 1,
-      width: 0,
-    },
   },
   textoBotao: {
     fontSize: 40,

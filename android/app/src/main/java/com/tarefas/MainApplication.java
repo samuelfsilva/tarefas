@@ -17,6 +17,7 @@ import com.reactnativenavigation.react.NavigationReactNativeHost;
 import com.reactnativenavigation.react.ReactGateway;
 
 import org.pgsqlite.SQLitePluginPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
 
 
 
@@ -44,6 +45,7 @@ public class MainApplication extends NavigationApplication {
       return Arrays.<ReactPackage>asList(
           // eg. new VectorIconsPackage()
           //new MainReactPackage(),
+          new VectorIconsPackage(),
           new RNGestureHandlerPackage(),
           new SQLitePluginPackage()
       );

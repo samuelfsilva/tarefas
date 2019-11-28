@@ -13,6 +13,7 @@ export default class Database {
   constructor() {
     //super();
     this.db = this.initDB();
+    // Deleta Todas as Tarefas
     //this.deleteLista();
   }
 
@@ -97,7 +98,7 @@ export default class Database {
             var len = results.rows.length;
             for (let i = 0; i < len; i++) {
               let row = results.rows.item(i);
-              console.log(row.texto + " - " + row.cod_lista);
+              console.log(row.texto + " - " + row.prioridade + " - " + row.cod_lista);
               const { cod_lista, texto, prioridade } = row;
               lista.push({
                 cod_lista,
@@ -131,7 +132,7 @@ export default class Database {
   addLista(item) {
     //return new Promise((resolve) => {
       this.db.transaction((tx) => {
-        tx.executeSql('INSERT INTO Lista VALUES (?, ?, ?)', [item[0].cod_lista, item[0].texto, null]
+        tx.executeSql('INSERT INTO Lista (cod_lista,texto,prioridade) VALUES (?, ?, ?)', [item[0].cod_lista, item[0].texto, item[0].prioridade]
         ,(_tx, _results) => {
           //resolve(results);
         },

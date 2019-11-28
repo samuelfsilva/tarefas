@@ -7,9 +7,21 @@ import {
     StyleSheet,
     TouchableHighlight,
  } from 'react-native';
+ import { Icon } from 'react-native-elements';
 
 export default class Lista extends Component {
     //state = {  }
+    exibePrioridade(valor) {
+      console.log('Prioridade > ',valor,typeof valor);
+      switch (valor) {
+        case 1:
+            return <View style={styles.pBaixa} />;
+        case 2:
+            return <View style={styles.pMedia} />;
+        case 3:
+            return <View style={styles.pAlta} />;
+      }
+    }
     render() {
         return (
           <FlatList style={styles.lista}
@@ -20,10 +32,13 @@ export default class Lista extends Component {
                 renderItem={ ({item}) =>
                   <View style={styles.item}>
                     <Text style={styles.itemTexto}>{item.texto}</Text>
-                    <TouchableHighlight style={styles.itemBotao}
-                        underlayColor={'gray'} onPress={()=>{this.props.deletaItemCallback(item.cod_lista);}}>
-                        <Text style={styles.textoBotao}>X</Text>
-                    </TouchableHighlight>
+                    {this.exibePrioridade(item.prioridade)}
+                    <Icon
+                      reverse
+                      name="close"
+                      color="red"
+                      size={10}
+                      onPress={()=>{this.props.deletaItemCallback(item.cod_lista);}} />
                   </View>
                 }
             />
@@ -31,6 +46,7 @@ export default class Lista extends Component {
     }
 }
 
+const tamanhoPrioridade = 20;
 const styles = StyleSheet.create({
   item: {
       justifyContent: 'center',
@@ -68,7 +84,28 @@ const styles = StyleSheet.create({
       //
     },
     textoBotao: {
-      fontSize: 10,
+      fontSize: 40,
       color: 'white',
+    },
+    pBaixa: {
+      width: tamanhoPrioridade,
+      height: tamanhoPrioridade,
+      borderRadius: tamanhoPrioridade / 2,
+      backgroundColor: 'green',
+      marginRight: 20,
+    },
+    pMedia: {
+      width: tamanhoPrioridade,
+      height: tamanhoPrioridade,
+      borderRadius: tamanhoPrioridade / 2,
+      backgroundColor: 'orange',
+      marginRight: 20,
+    },
+    pAlta: {
+      width: tamanhoPrioridade,
+      height: tamanhoPrioridade,
+      borderRadius: tamanhoPrioridade / 2,
+      backgroundColor: 'red',
+      marginRight: 20,
     },
 });
