@@ -69,23 +69,21 @@ export default class Database {
       this.dbError);
   }
 
+  closeSucesso() {
+    console.log('Banco Fechado');
+  }
+
   close() {
     if (this.db) {
-      console.log("Closing DB");
-      this.db.close()
-        .then(_status => {
-          console.log("Database CLOSED");
-        })
-        .catch(error => {
-          this.errorCB(error);
-        });
+      console.log("Fechando Banco");
+      this.db.close(this.closeSucesso,this.errorCallback);
     } else {
       console.log("Database was not OPENED");
     }
   }
 
   errorCallback(_e) {
-    console.log("Erro!");
+    console.log("Erro! - ",_e);
   }
 
   getLista() {
@@ -94,11 +92,9 @@ export default class Database {
       this.db.transaction((tx) => {
           tx.executeSql('SELECT cod_lista, texto, prioridade FROM Lista', [],
           (_tx, results) => {
-            console.log("Requisição completa" + results.rows.length);
             var len = results.rows.length;
             for (let i = 0; i < len; i++) {
               let row = results.rows.item(i);
-              console.log(row.texto + " - " + row.prioridade + " - " + row.cod_lista);
               const { cod_lista, texto, prioridade } = row;
               lista.push({
                 cod_lista,
@@ -121,6 +117,7 @@ export default class Database {
           (_tx, results) => {
             let row = results.rows.item(0);
             const { maximo } = row;
+            console.log(Number(maximo) + 1);
             resolve(Number(maximo) + 1);
           },
           this.errorCallback
@@ -132,7 +129,8 @@ export default class Database {
   addLista(item) {
     //return new Promise((resolve) => {
       this.db.transaction((tx) => {
-        tx.executeSql('INSERT INTO Lista (cod_lista,texto,prioridade) VALUES (?, ?, ?)', [item[0].cod_lista, item[0].texto, item[0].prioridade]
+        tx.executeSql('INSERT INTO Lista (cod_lista,texto,prioridade) VALUES (?, ?, ?)',
+          [item[0].cod_lista, item[0].texto, item[0].prioridade]
         ,(_tx, _results) => {
           //resolve(results);
         },

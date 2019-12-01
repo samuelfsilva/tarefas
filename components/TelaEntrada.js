@@ -22,8 +22,22 @@ export default class TelaEntrada extends Component {
     };
   }
 
+  componentDidMount() {
+    this.navigationEventListener = Navigation.events().bindComponent(this);
+  }
+
+  componentWillUnmount() {
+    if (this.navigationEventListener) {
+      this.navigationEventListener.remove();
+    }
+    //db.close();
+  }
+
+  componentDidAppear() {
+    db.initDB();
+  }
+
   adicionaLista(valorEntrada, inputEntrada,prioridade) {
-    console.log('>> ',this.state.prioridade);
     if (valorEntrada === '') {
       return;
     }
@@ -35,16 +49,15 @@ export default class TelaEntrada extends Component {
         prioridade,
       },
     ];
-    console.log(nova);
     db.addLista(nova);
-  });
-  console.log(valorEntrada);
-  inputEntrada.clear();
-  this.setState({
-    valorEntrada: '',
-    prioridade: 2,
-  });
-  Navigation.popToRoot(this.props.componentId);
+    });
+    inputEntrada.clear();
+    this.setState({
+      valorEntrada: '',
+      prioridade: 2,
+    });
+    //db.close();
+    Navigation.pop(this.props.componentId);
   }
 
   setPrioridade(valor) {

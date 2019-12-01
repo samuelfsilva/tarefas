@@ -11,6 +11,7 @@ import Lista from './Lista';
 import Database from '../src/database/Database';
 
 const db = new Database();
+
 export default class TelaLista extends Component {
 
   constructor(){
@@ -19,6 +20,7 @@ export default class TelaLista extends Component {
       valorEntrada: '',
       lista: [],
     };
+    setInterval(() => {this.getLista();},5000);
     //this.getLista();
   }
 
@@ -29,12 +31,20 @@ export default class TelaLista extends Component {
   } */
   componentDidMount() {
     this.navigationEventListener = Navigation.events().bindComponent(this);
+    this.commandListener = Navigation.events().registerCommandListener((name, params) => {
+      //if (name === 'pop') {
+        //this.getLista();
+      //}
+      console.log(name,params);
+    });
+    //this.getLista();
   }
 
   componentWillUnmount() {
     if (this.navigationEventListener) {
       this.navigationEventListener.remove();
     }
+    this.commandListener.remove();
   }
 
   componentDidAppear() {
@@ -42,7 +52,6 @@ export default class TelaLista extends Component {
   }
 
   telaAdiciona() {
-    console.log('Press');
     Navigation.push(this.props.componentId, {
       component: {
         name: 'TelaEntrada',
@@ -51,6 +60,8 @@ export default class TelaLista extends Component {
             title: {
               text: 'Adicionar tarefas',
               alignment: 'center',
+              color: 'white',
+              fontSize: 20,
             },
             background: {
               color: 'red',
@@ -63,18 +74,14 @@ export default class TelaLista extends Component {
 
   getLista() {
     let lista = [];
-    db.getLista().then((data) => {
-      lista = data;
-      this.setState({
-        lista,
-        //isLoading: false,
+      db.getLista().then((data) => {
+        lista = data;
+        this.setState({
+          lista,
+        });
+      }).catch((err) => {
+        console.log(err);
       });
-    }).catch((err) => {
-      console.log(err);
-      //this.setState = {
-        //isLoading: false
-      //};
-    });
   }
 
   deletaItem(id) {
