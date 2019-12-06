@@ -20,24 +20,14 @@ export default class TelaLista extends Component {
       valorEntrada: '',
       lista: [],
     };
-    setInterval(() => {this.getLista();},5000);
-    //this.getLista();
   }
-
-  /* componentDidMount() {
-    this.TelaLista = this.props.navigation.addListener('didFocus', () => {
-      //this.getLista();
-    });
-  } */
   componentDidMount() {
     this.navigationEventListener = Navigation.events().bindComponent(this);
     this.commandListener = Navigation.events().registerCommandListener((name, params) => {
       //if (name === 'pop') {
         //this.getLista();
       //}
-      console.log(name,params);
     });
-    //this.getLista();
   }
 
   componentWillUnmount() {

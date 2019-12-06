@@ -41,16 +41,16 @@ export default class TelaEntrada extends Component {
     if (valorEntrada === '') {
       return;
     }
-    db.getNovaChave().then((maximo) => {
+    //db.getNovaChave().then((maximo) => {
     let nova = [
       {
-        cod_lista: String(maximo),
+        cod_lista: 0,//String(maximo),
         texto: valorEntrada,
         prioridade,
       },
     ];
     db.addLista(nova);
-    });
+    //});
     inputEntrada.clear();
     this.setState({
       valorEntrada: '',
@@ -64,7 +64,7 @@ export default class TelaEntrada extends Component {
     this.setState({
       prioridade: valor,
     });
-    console.log(valor);
+    //console.log(valor);
   }
 
   render() {

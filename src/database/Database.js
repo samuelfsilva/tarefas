@@ -42,7 +42,7 @@ export default class Database {
       ["table","Lista"], (_tx, results) => {
         if (results.rows.length === 0) {
           db.transaction((__tx) => {
-            __tx.executeSql('CREATE TABLE IF NOT EXISTS Lista (cod_lista, texto, prioridade)',
+            __tx.executeSql('CREATE TABLE IF NOT EXISTS Lista (cod_lista INTEGER PRIMARY KEY AUTOINCREMENT, texto TEXT, prioridade INTEGER)',
             [], (___tx, _results) => {
               console.log("Criando tabela");
             },(_e) => {
@@ -90,12 +90,13 @@ export default class Database {
     return new Promise((resolve) => {
       const lista = [];
       this.db.transaction((tx) => {
-          tx.executeSql('SELECT cod_lista, texto, prioridade FROM Lista', [],
+          tx.executeSql('SELECT cast(cod_lista as TEXT) as cod_lista, texto, prioridade FROM Lista', [],
           (_tx, results) => {
             var len = results.rows.length;
             for (let i = 0; i < len; i++) {
               let row = results.rows.item(i);
               const { cod_lista, texto, prioridade } = row;
+              console.log(cod_lista, texto, prioridade);
               lista.push({
                 cod_lista,
                 texto,
@@ -116,8 +117,8 @@ export default class Database {
           tx.executeSql('SELECT COALESCE(MAX(cod_lista),0) as maximo FROM Lista', [],
           (_tx, results) => {
             let row = results.rows.item(0);
-            const { maximo } = row;
-            console.log(Number(maximo) + 1);
+            const { maximo, minimo } = row;
+            console.log(Number(maximo));
             resolve(Number(maximo) + 1);
           },
           this.errorCallback
@@ -129,8 +130,8 @@ export default class Database {
   addLista(item) {
     //return new Promise((resolve) => {
       this.db.transaction((tx) => {
-        tx.executeSql('INSERT INTO Lista (cod_lista,texto,prioridade) VALUES (?, ?, ?)',
-          [item[0].cod_lista, item[0].texto, item[0].prioridade]
+        tx.executeSql('INSERT INTO Lista (texto,prioridade) VALUES (?, ?)',
+          [item[0].texto, item[0].prioridade]
         ,(_tx, _results) => {
           //resolve(results);
         },
